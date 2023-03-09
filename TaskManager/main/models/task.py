@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from .user import User
 from .tag import Tag
@@ -19,7 +20,7 @@ class Task(models.Model):
         LOW = "low"
 
     title = models.CharField(max_length=200, default="New task")
-    users = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL)
     tags = models.ManyToManyField(Tag)
     description = models.TextField()
     creation_date = models.DateTimeField(auto_now_add=True)
