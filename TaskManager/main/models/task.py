@@ -22,7 +22,7 @@ class Task(models.Model):
     title = models.CharField(max_length=200, default="New task")
     users = models.ManyToManyField(settings.AUTH_USER_MODEL)
     tags = models.ManyToManyField(Tag)
-    description = models.TextField()
+    description = models.TextField(blank=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     change_date = models.DateTimeField(auto_now=True)
     deadline_date = models.DateTimeField(null=True)
