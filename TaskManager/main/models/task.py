@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from .user import User, Developer
 from .tag import Tag
@@ -38,6 +39,7 @@ class Task(models.Model):
         related_name="tasks_assigned_by",
         limit_choices_to={"role__in": [User.Roles.MANAGER, User.Roles.ADMIN]},
     )
+
     tags = models.ManyToManyField(Tag)
     description = models.TextField(blank=True)
     creation_date = models.DateTimeField(auto_now_add=True)
