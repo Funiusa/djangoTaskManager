@@ -22,27 +22,28 @@ class Task(models.Model):
     assigned_to = models.ManyToManyField(
         Developer,
         verbose_name="Executor",
-        related_name="tasks_assigned_to",
+        related_name="assigned_to",
         related_query_name="assigned_tasks",
-        blank=True,
+        blank=False,
         limit_choices_to={
             "role": User.Roles.DEVELOPER,
         },
     )
     assigned_by = models.ForeignKey(
         User,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
+        on_delete=models.CASCADE,
+        blank=False,
         verbose_name="Author",
-        related_name="tasks_assigned_by",
+        related_name="assigned_by",
         limit_choices_to={"role__in": [User.Roles.MANAGER, User.Roles.ADMIN]},
     )
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, related_name="tags")
     description = models.TextField(blank=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     change_date = models.DateTimeField(auto_now=True)
-    deadline_date = models.DateTimeField(null=True)
+    deadline_date = models.DateTimeField(
+        auto_created=False, null=True, verbose_name="Deadline"
+    )
     state = models.CharField(max_length=255, default=States.NEW, choices=States.choices)
     priority = models.CharField(
         max_length=255, default=Priority.LOW, choices=Priority.choices

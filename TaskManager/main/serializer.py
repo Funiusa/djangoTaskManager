@@ -16,20 +16,24 @@ class UserSerializer(serializers.ModelSerializer):
             "email",
         )
 
+    def create(self, validated_data):
+        return User(**validated_data)
+
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ("id", "u_id", "title")
+        read_only_fields = ("id", "u_id")
+
+    def create(self, validated_data):
+        return Tag.objects.create(**validated_data)
 
 
 class TaskSerializer(serializers.ModelSerializer):
-    assigned_by = serializers.StringRelatedField(source="assigned_by.username")
-    assigned_to = serializers.SerializerMethodField()
-    tags = TagSerializer(
-        many=True,
-        read_only=True,
-    )
+    assigned_by = serializers.CharField(source="assigned_by.username", read_only=True)
+    tags = TagSerializer
+    assigned_to = UserSerializer
 
     @staticmethod
     def get_assigned_to(obj):
@@ -41,6 +45,7 @@ class TaskSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "description",
+            "deadline_date",
             "creation_date",
             "assigned_by",
             "assigned_to",
