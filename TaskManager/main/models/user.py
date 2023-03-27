@@ -27,9 +27,6 @@ class Admin(User):
     is_superuser = True
     is_staff = True
 
-    def __str__(self):
-        return self.base_role
-
     class Meta:
         proxy = True
 
@@ -37,18 +34,12 @@ class Admin(User):
 class Manager(User):
     base_role = User.Roles.MANAGER
 
-    def __str__(self):
-        return self.base_role
-
     class Meta:
         proxy = True
 
 
 class Developer(User):
     base_role = User.Roles.DEVELOPER
-
-    def __str__(self):
-        return self.base_role
 
     class Meta:
         proxy = True
