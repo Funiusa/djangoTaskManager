@@ -1,10 +1,12 @@
 
 import django_filters
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+
 from .models import User, Task, Tag
+from .permission import IsStaffPermission
 from .serializer import UserSerializer, TagSerializer, TaskSerializer
 from django_filters.rest_framework import DjangoFilterBackend
-from django.shortcuts import render
 
 
 class UserFilter(django_filters.FilterSet):
@@ -20,6 +22,15 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = UserSerializer
     filterset_class = UserFilter
     filter_backends = [DjangoFilterBackend]
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self):
+        pk = self.kwargs.get("pk")
+
+        if pk == "current":
+            return self.request.user
+
+        return super().get_object()
 
 
 class TaskFilter(django_filters.FilterSet):
@@ -29,7 +40,7 @@ class TaskFilter(django_filters.FilterSet):
         lookup_expr="icontains",
     )
     assigned_to = django_filters.CharFilter(
-        field_name="assigned_to__username",
+        field_name="assigned_to",
         lookup_expr="icontains",
     )
     tags = django_filters.ModelMultipleChoiceFilter(
@@ -46,8 +57,13 @@ class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = TaskFilter
+    permission_classes = (IsAuthenticatedOrReadOnly, IsStaffPermission)
+
+    def perform_create(self, serializer):
+        serializer.save(assigned_by=self.request.user)
 
 
 class TagViewSet(viewsets.ModelViewSet):
-    queryset = Tag.objects.order_by("id")
+    queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    permission_classes = (IsAuthenticated, IsStaffPermission)

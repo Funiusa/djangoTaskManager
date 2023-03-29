@@ -1,5 +1,10 @@
 from http import HTTPStatus
 from typing import Type, Container
+from django.db import models
+from django.urls import reverse
+from rest_framework.test import APIClient, APITestCase
+from main.models import User, Task, Tag
+
 
 
 class TestAdmin(APITestCase):
@@ -10,14 +15,16 @@ class TestAdmin(APITestCase):
     def setUpTestData(cls) -> None:
         super().setUpTestData()
         cls.admin = User.objects.create_superuser(
-            "test@test.ru", email=None, password=None,
+            "test@test.ru",
+            email=None,
+            password=None,
         )
         cls.client = APIClient()
         cls.client.force_login(cls.admin)
 
     @classmethod
     def assert_forms(
-            cls, model: Type[models.Model], key: int, check_actions: Container = ()
+        cls, model: Type[models.Model], key: int, check_actions: Container = ()
     ) -> None:
         app_label = model._meta.app_label
         model_name = model._meta.model_name
@@ -40,5 +47,6 @@ class TestAdmin(APITestCase):
 
 
     def test_task(self) -> None:
-        task = Task.objects.create()
+        user = User.objects.create_user(username="testuser")
+        task = Task.objects.create(assigned_by=user)
         self.assert_forms(Task, task.id)
