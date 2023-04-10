@@ -1,8 +1,6 @@
 version: '3.7'
 
 services:
-  base_api:
-    build: .
   api:
     build: .
     volumes:
@@ -12,7 +10,6 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - base_api
       - db
     environment: &api-environment
       DJANGO_ENV: dev

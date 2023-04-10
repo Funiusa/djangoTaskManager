@@ -16,7 +16,7 @@ class UserFilter(django_filters.FilterSet):
         fields = ("username",)
 
 
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.order_by("id")
     serializer_class = UserSerializer
     filterset_class = UserFilter
@@ -39,11 +39,12 @@ class TaskFilter(django_filters.FilterSet):
         lookup_expr="icontains",
     )
     assigned_to = django_filters.CharFilter(
-        field_name="assigned_to",
+        field_name="assigned_to__username",
         lookup_expr="icontains",
     )
-    tags = django_filters.ModelMultipleChoiceFilter(
-        field_name="tags__title", to_field_name="title", queryset=Tag.objects.all()
+    tags = django_filters.CharFilter(
+        field_name="tags__title",
+        lookup_expr="icontains",
     )
 
     class Meta:

@@ -1,7 +1,5 @@
-
 import factory
 from rest_framework import status
-
 from main.models import User
 from test.factories import UserFactory, TagFactory, TaskFactory
 from rest_framework.test import APITestCase
@@ -17,9 +15,9 @@ class PermissionsTest(APITestCase):
         self.task_data = factory.build(
             dict,
             FACTORY_CLASS=TaskFactory,
-            assigned_to=[self.developer.id],
-            assigned_by=self.manager.id,
-            tags=[self.tag.id],
+            assigned_to=[self.developer],
+            assigned_by=self.manager,
+            tags=[self.tag],
         )
 
     def test_admin_can_create_tag(self):
