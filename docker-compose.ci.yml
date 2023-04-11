@@ -14,10 +14,7 @@ x-db-config: &db-config
 
 services:
   api:
-    image: userapp_api
-    build:
-      context: .
-      target: base
+    build: .
     environment:
       <<: *app-config
       <<: *db-config
