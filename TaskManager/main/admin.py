@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+
 from .models import User, Task, Tag
 
 
@@ -24,9 +25,23 @@ class UserAdmin(BaseUserAdmin):
     list_display = ["id", "username", "email", "role", "is_active", "is_staff"]
     add_fieldsets = (
         (
-            None,
+            "Required information",
             {
-                "fields": ("username", "role", "password1", "password2"),
+                "fields": (
+                    "username",
+                    "role",
+                    "password1",
+                    "password2",
+                ),
+            },
+        ),
+        (
+            "Additional fields",
+            {
+                "fields": (
+                    "date_of_birth",
+                    "phone",
+                )
             },
         ),
     )

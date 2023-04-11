@@ -1,4 +1,5 @@
 import factory
+from django.contrib.auth.hashers import make_password
 from faker import Faker
 from main.models import Task, User, Tag
 
@@ -17,6 +18,9 @@ class UserFactory(factory.django.DjangoModelFactory):
         "random_element",
         elements=[choice[0] for choice in User.Roles.choices],
     )
+    password = factory.LazyFunction(lambda: make_password("password"))
+    date_of_birth = fake.date_of_birth().strftime("%Y-%m-%d")
+    phone = fake.phone_number()[:20]
 
 
 class TagFactory(factory.django.DjangoModelFactory):

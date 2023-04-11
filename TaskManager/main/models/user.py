@@ -8,10 +8,12 @@ class User(AbstractUser):
         MANAGER = "manager"
         ADMIN = "admin"
 
+    date_of_birth = models.DateField(null=True, blank=True)
+    phone = models.CharField(max_length=20, null=True, blank=True)
     role = models.CharField(
         max_length=255, default=Roles.DEVELOPER, choices=Roles.choices, db_index=True
     )
-    password = models.CharField(max_length=128, blank=True)
+    password = models.CharField(max_length=128)
     REQUIRED_FIELDS = ["role", "email"]
 
     def __str__(self):
