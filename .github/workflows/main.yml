@@ -3,10 +3,10 @@ name: Main
 on:
   pull_request:
     branches:
-      - 'feature/django_app_api_devops'
+      - 'feature/test_action'
   push:
     branches:
-      - 'develop'
+      - 'feature/test_action'
 
 jobs:
   build:
