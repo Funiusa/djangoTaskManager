@@ -22,4 +22,6 @@ jobs:
         run: pip install coveralls
       - name: Run tests
         run: |
+          echo $COVERALLS_REPO_TOKEN
+          echo ls -la TaskManager/
           docker-compose --file docker-compose.ci.yml run -e COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN --rm api make test
