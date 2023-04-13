@@ -24,6 +24,8 @@ services:
       - "8000:8000"
     stdin_open: true
     tty: true
+    volumes:
+      - ./TaskManager/:/app
 
   db:
     image: postgres:12.5-alpine

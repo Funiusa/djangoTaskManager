@@ -23,7 +23,6 @@ jobs:
       - name: Run tests
         run: |
           docker-compose --file docker-compose.ci.yml run --rm api make test
-          CONTAINER_ID=$(docker ps -q -l)
-          docker cp $CONTAINER_ID:/coverage.xml .
+          ls -la
       - name: Upload coverage data to Coveralls
         run: coveralls
