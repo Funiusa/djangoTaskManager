@@ -13,12 +13,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Install Coveralls
+        run: pip install coveralls
       - name: Run tests
         env:
           COVERAGE: true
           RAILS_ENV: test
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
         run: |
-          make test
+          coverage run --source=main -m pytest
       - name: Upload coverage data to Coveralls
         run: coveralls
