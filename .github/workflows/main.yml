@@ -24,3 +24,7 @@ jobs:
           docker-compose --file docker-compose.ci.yml run --rm api make test
       - name: Upload coverage data to Coveralls
         run: coveralls
+        env:
+          COVERAGE: true
+          RAILS_ENV: test
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
