@@ -3,10 +3,10 @@ name: Main
 on:
   pull_request:
     branches:
-      - 'develop'
+      - 'feature/django_app_api_coveralls'
   push:
     branches:
-      - 'develop'
+      - 'feature/django_app_api_coveralls'
 
 jobs:
   build:
@@ -17,4 +17,7 @@ jobs:
         env:
           COVERAGE: true
           RAILS_ENV: test
-        run: docker-compose --file docker-compose.ci.yml run --rm api pytest
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        run: |
+          docker-compose --file docker-compose.ci.yml run --rm api pytest --cov=main
+          coveralls
