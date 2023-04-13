@@ -23,6 +23,5 @@ jobs:
       - name: Run tests
         run: |
           docker-compose --file docker-compose.ci.yml run --rm api make test
-          ls -la
       - name: Upload coverage data to Coveralls
-        run: coveralls
+        run: coveralls --file ./TaskManager/coverage.xml
