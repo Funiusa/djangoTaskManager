@@ -22,6 +22,6 @@ jobs:
         run: pip install coveralls
       - name: Run tests
         run: |
-          docker-compose --file docker-compose.ci.yml run --rm api make test
+          docker-compose --file docker-compose.ci.yml run --rm api pytest
       - name: Upload coverage data to Coveralls
         run: coveralls
