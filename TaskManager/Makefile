@@ -1,7 +1,6 @@
 test:
-	pip install coveralls
 	coverage run -m pytest
-	coverage report > coverage.xml
+	coverage report
 	coveralls
 
 .PHONY: test
