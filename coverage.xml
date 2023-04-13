@@ -1,0 +1,27 @@
+Name                              Stmts   Miss  Cover
+-----------------------------------------------------
+main/__init__.py                      0      0   100%
+main/admin.py                        19      0   100%
+main/apps.py                          4      0   100%
+main/migrations/0001_initial.py      11      0   100%
+main/migrations/__init__.py           0      0   100%
+main/models/__init__.py               4      0   100%
+main/models/tag.py                    9      0   100%
+main/models/task.py                  30      0   100%
+main/models/user.py                  30      0   100%
+main/permission.py                    6      0   100%
+main/serializer.py                   38      4    89%
+main/views.py                        43      1    98%
+task_manager/__init__.py              0      0   100%
+task_manager/settings.py             21      0   100%
+task_manager/urls.py                 14      0   100%
+test/base.py                         55      4    93%
+test/factories.py                    29      0   100%
+test/test_admin.py                   35      1    97%
+test/test_permissions.py             37      0   100%
+test/test_simplejwt.py               59      0   100%
+test/test_tag.py                     34      0   100%
+test/test_task.py                   104      0   100%
+test/test_user.py                    55      0   100%
+-----------------------------------------------------
+TOTAL                               637     10    98%
