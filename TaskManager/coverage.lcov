@@ -282,7 +282,7 @@ DA:127,1,nIfFAuXCLGSrgbuCASjpIQ
 DA:132,1,rtaKR+dnrFLvtDFVDvfQDg
 DA:134,1,lpAz4cGqxXZGkVlq/XWsRQ
 LF:21
-LH:22
+LH:21
 end_of_record
 TN:
 SF:task_manager/urls.py
@@ -302,7 +302,7 @@ DA:47,1,7uAt48xdU2/mITozQNPOnw
 DA:52,1,7uAt48xdU2/mITozQNPOnw
 DA:58,1,CAoligC0HobTA4MaoLsTvw
 LF:14
-LH:15
+LH:14
 end_of_record
 TN:
 SF:task_manager/wsgi.py
