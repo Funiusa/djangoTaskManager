@@ -26,8 +26,8 @@ jobs:
         run: |
           docker-compose --file docker-compose.ci.yml run --rm api make test
           cd TaskManager/
-          pip install --upgrade coveralls
-          coveralls --service=github
+          pip3 install --upgrade coveralls && pip3 install pyyml
+          coveralls
         env:
           COVERAGE: ${{ env.COVERAGE }}
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}

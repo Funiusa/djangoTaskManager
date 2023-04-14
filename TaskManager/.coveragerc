@@ -1,0 +1,27 @@
+[run]
+source = /TaskManager
+
+[report]
+exclude_lines =
+    pragma: no cover
+    raise NotImplementedError
+    if __name__ == .__main__.:
+ignore_errors = True
+omit =
+    */__init__.py
+
+
+[html]
+directory = coverage_html_report  # Optional: Specify the directory to generate HTML coverage report
+
+[xml]
+output = coverage.xml  # Optional: Specify the XML output file for coverage report
+
+[json]
+output = coverage.json 
+
+[coveralls]
+service = github
+parallel = true
+repo_token = 6Ke8zVX0SQg5FMpTEECmvIGoJJa40QgmR
+coveralls_host = https://coveralls.io

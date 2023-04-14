@@ -1,6 +1,6 @@
 test:
-	coverage run -m pytest
+	coverage run --source=. -m pytest test/
 	coverage report
-	coverage lcov
+	coverage json
 
 .PHONY: test
