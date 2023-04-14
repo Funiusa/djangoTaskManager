@@ -27,13 +27,7 @@ jobs:
       - name: Run tests
         run: |
           docker-compose --file docker-compose.ci.yml run --rm api make test
-          ls -la
-          cp TaskManager/coverage.lcov .
-          cp TaskManager/.coverage .
-          coveralls
 
-      - name: Coveralls
-        uses: coverallsapp/github-action@v1
   coveralls:
     name: Indicate completion to coveralls.io
     needs: test
