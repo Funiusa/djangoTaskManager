@@ -28,7 +28,8 @@ jobs:
         run: |
           docker-compose --file docker-compose.ci.yml run --rm api make test
           ls -la
-          cp TackManager/coverage.lcov .
+          cp TaskManager/coverage.lcov .
+          cp TaskManager/.coverage .
 
       - name: Coveralls
         uses: coverallsapp/github-action@v1
