@@ -1,4 +1,4 @@
-name: Coverage Status
+name: Main
 
 on:
   pull_request:
@@ -8,35 +8,13 @@ on:
     branches:
       - 'feature/django_app_api_coveralls'
 
+
 jobs:
-  test:
+  tests:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
+      - uses: actions/checkout@v2
       - name: Run tests
-        run: |
-          docker-compose --file docker-compose.ci.yml run --rm api make test
-
-      - name: Coveralls
-        run: |
-          cd TaskManager/
-          curl -sL https://coveralls.io/coveralls-linux.tar.gz | tar -xz && ./coveralls
         env:
           COVERAGE: true
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  coveralls:
-    name: Indicate completion to coveralls.io
-    needs: test
-    runs-on: ubuntu-latest
-    container: python:3-slim
-    steps:
-    - name: Finished
-      run: |
-        pip3 install --upgrade coveralls
-        coveralls --service=github --finish
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: docker-compose --file docker-compose.ci.yml run --rm api pytest
