@@ -26,13 +26,24 @@ jobs:
         run: |
           docker-compose --file docker-compose.ci.yml run --rm api make test
           ls TaskManager/
-      - name: Send coverage
+      - name: Coveralls
         run: |
-          cp TaskManager/coverage.lcov .
-          ls -la
+          cd TaskManager/
           coveralls --service=github
-
         env:
           COVERAGE: ${{ env.COVERAGE }}
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  coveralls:
+    name: Indicate completion to coveralls.io
+    needs: test
+    runs-on: ubuntu-latest
+    container: python:3-slim
+    steps:
+    - name: Finished
+      run: |
+        pip3 install --upgrade coveralls
+        cd TaskManager/
+        coveralls --service=github --finish
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

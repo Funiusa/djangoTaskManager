@@ -1,5 +1,6 @@
 test:
 	coverage run -m pytest
-	coverage report -m > coverage.lcov
+	coverage report
+	coverage lcov
 
 .PHONY: test
