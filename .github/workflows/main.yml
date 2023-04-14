@@ -25,10 +25,8 @@ jobs:
       - name: Run tests
         run: |
           docker-compose --file docker-compose.ci.yml run --rm api make test
-          ls TaskManager/
-      - name: Coveralls
-        run: |
           cd TaskManager/
+          pip install --upgrade coveralls
           coveralls --service=github
         env:
           COVERAGE: ${{ env.COVERAGE }}
@@ -43,7 +41,6 @@ jobs:
     - name: Finished
       run: |
         pip3 install --upgrade coveralls
-        cd TaskManager/
         coveralls --service=github --finish
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

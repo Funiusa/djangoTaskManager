@@ -2,7 +2,7 @@ TN:
 SF:main/__init__.py
 DA:1,1,1B2M2Y8AsgTpgAmY7PhCfg
 LF:0
-LH:1
+LH:0
 end_of_record
 TN:
 SF:main/admin.py
@@ -57,7 +57,7 @@ TN:
 SF:main/migrations/__init__.py
 DA:1,1,1B2M2Y8AsgTpgAmY7PhCfg
 LF:0
-LH:1
+LH:0
 end_of_record
 TN:
 SF:main/models/__init__.py
@@ -258,7 +258,7 @@ TN:
 SF:task_manager/__init__.py
 DA:1,1,1B2M2Y8AsgTpgAmY7PhCfg
 LF:0
-LH:1
+LH:0
 end_of_record
 TN:
 SF:task_manager/settings.py
@@ -285,7 +285,7 @@ DA:127,1,nIfFAuXCLGSrgbuCASjpIQ
 DA:132,1,rtaKR+dnrFLvtDFVDvfQDg
 DA:134,1,lpAz4cGqxXZGkVlq/XWsRQ
 LF:21
-LH:22
+LH:21
 end_of_record
 TN:
 SF:task_manager/urls.py
@@ -305,7 +305,7 @@ DA:47,1,7uAt48xdU2/mITozQNPOnw
 DA:52,1,7uAt48xdU2/mITozQNPOnw
 DA:58,1,CAoligC0HobTA4MaoLsTvw
 LF:14
-LH:15
+LH:14
 end_of_record
 TN:
 SF:test/base.py
