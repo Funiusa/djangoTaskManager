@@ -30,6 +30,7 @@ jobs:
           ls -la
           cp TaskManager/coverage.lcov .
           cp TaskManager/.coverage .
+          coveralls
 
       - name: Coveralls
         uses: coverallsapp/github-action@v1
