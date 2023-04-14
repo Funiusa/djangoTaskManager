@@ -20,17 +20,17 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install Coveralls
-        run: pip3 install --upgrade coveralls
+        run: |
+          pip3 install --upgrade coveralls
+          pip3 install pyyml
 
       - name: Run tests
         run: |
           docker-compose --file docker-compose.ci.yml run --rm api make test
-          pip3 install --upgrade coveralls && pip3 install pyyml
-          coveralls
-        env:
-          COVERAGE: ${{ env.COVERAGE }}
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ls -la
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@v1
   coveralls:
     name: Indicate completion to coveralls.io
     needs: test
