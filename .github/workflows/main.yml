@@ -27,7 +27,10 @@ jobs:
           docker-compose --file docker-compose.ci.yml run --rm api make test
           ls TaskManager/
       - name: Send coverage
-        run: coveralls --file=$PWD/TaskManager/coverage.lcov --service=github
+        run: |
+          cp TaskManager/coverage.lcov .
+          ls -la
+          coveralls --service=github
 
         env:
           COVERAGE: ${{ env.COVERAGE }}
