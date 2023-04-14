@@ -24,8 +24,6 @@ jobs:
           docker-compose --file docker-compose.ci.yml run make test
 
       - name: Coveralls
-        run: cd TaskManager/
-        uses: coverallsapp/github-action@feature/django_app_api_coveralls
         run: |
           cd TaskManager/
           curl -sL https://coveralls.io/coveralls-linux.tar.gz | tar -xz && ./coveralls
