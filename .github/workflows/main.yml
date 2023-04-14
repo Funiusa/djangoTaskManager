@@ -23,7 +23,7 @@ jobs:
         run: |
           docker-compose --file docker-compose.ci.yml run --rm api make test
           ls -la
-          coveralls --service=github --file=TaskManager
+          coveralls --file=TaskManager/coverage.lcov --service=github
         env:
           COVERAGE: true
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
