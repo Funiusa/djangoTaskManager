@@ -25,7 +25,6 @@ jobs:
       - name: Run tests
         run: |
           docker-compose --file docker-compose.ci.yml run --rm api make test
-          cd TaskManager/
           pip3 install --upgrade coveralls && pip3 install pyyml
           coveralls
         env:
