@@ -16,27 +16,34 @@ jobs:
       COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
       - name: Install Coveralls
-        run: pip install --upgrade coveralls
+        run: pip3 install --upgrade coveralls
+
       - name: Run tests
         run: |
           docker-compose --file docker-compose.ci.yml run --rm api make test
-          ls -la
-          coveralls --file=TaskManager/coverage.lcov --service=github
+          ls TaskManager/
+      - name: Send coverage
+        run: coveralls --file=$PWD/TaskManager/coverage.lcov --service=github
+
         env:
-          COVERAGE: true
+          COVERAGE: ${{ env.COVERAGE }}
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   coveralls:
     name: Indicate completion to coveralls.io
     needs: test
     runs-on: ubuntu-latest
     container: python:3-slim
     steps:
-    - name: Finished
-      run: |
-        pip3 install --upgrade coveralls
-        coveralls --service=github --finish
+      - name: Install Coveralls
+        run: pip install --upgrade coveralls
+
+      - name: Finished
+        run: coveralls --service=github --finish
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
