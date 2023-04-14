@@ -1,5 +1,5 @@
 test:
 	coverage run -m pytest
-	coverage report > coverage.xml
+	coverage report -m > coverage.lcov
 
 .PHONY: test
