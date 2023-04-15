@@ -2,6 +2,9 @@
 
 [![Coverage Status](https://coveralls.io/repos/github/Funiusa/djangoTaskManager/badge.svg?branch=feature/django_app_api_coveralls)](https://coveralls.io/github/Funiusa/djangoTaskManager?branch=feature/django_app_api_coveralls)
 
-![Coveralls](https://img.shields.io/coverallsCoverage/github/Funiusa/djangoTaskManager?style=flat-square)
 
-https://img.shields.io/endpoint?url=https://api.rollbar.com/api/1/status/{{funiusa}}?access_token={{41894451d1b94fc09dfdf64744c15673}}
+[![Rollbar](https://img.shields.io/endpoint?url=https://api.rollbar.com/api/1/status/{{funiusa}}?access_token={{41894451d1b94fc09dfdf64744c15673}})](https://rollbar.com/funiusa/all/items/?sort=%5Bobject%20Object%5D&status=active&date_from=&date_to=&environments=development&environments=production&activated_to=&framework=&levels=10&levels=20&levels=30&levels=40&levels=50&activated_from=&offset=0&timezone=Asia%2FAqtobe&assigned_user=&date_filtering=seen&projects=632439&query=&enc_query=)
+
+[![Coveralls](https://img.shields.io/coverallsCoverage/github/Funiusa/djangoTaskManager?label=Coveralls&logo=Coveralls&logoColor=red)](https://coveralls.io/github/Funiusa/djangoTaskManager?branch=feature/django_app_api_coveralls)
+
+

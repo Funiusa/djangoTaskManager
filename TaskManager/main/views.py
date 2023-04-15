@@ -1,4 +1,5 @@
 import django_filters
+from django.http import HttpResponse
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 
@@ -67,3 +68,4 @@ class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = (IsAuthenticated, IsStaffPermission)
+
