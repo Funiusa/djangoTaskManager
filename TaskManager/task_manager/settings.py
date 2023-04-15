@@ -55,7 +55,16 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "rollbar.contrib.django.middleware.RollbarNotifierMiddleware",
 ]
+
+ROLLBAR = {
+    "access_token": "bb08d122b6db46dd93d7a57049b56a06",
+    "environment": "development" if DEBUG else "production",
+    "code_version": "1.0",
+    "root": BASE_DIR,
+    "branch": "feature/django_app_api_coveralls",
+}
 
 ROOT_URLCONF = "task_manager.urls"
 
