@@ -1,7 +1,6 @@
 import factory
 from faker import Faker
 from rest_framework import status
-
 from main.views import UserFilter
 from test.base import TestViewSetBase
 from test.factories import UserFactory

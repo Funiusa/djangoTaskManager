@@ -1,7 +1,6 @@
 import factory
 from rest_framework import status
-
-from main.models import User, Task
+from main.models import User
 from main.views import TaskFilter
 from test.base import TestViewSetBase
 from test.factories import TaskFactory, UserFactory, TagFactory, fake
