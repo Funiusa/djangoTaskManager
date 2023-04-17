@@ -12,7 +12,6 @@ class User(AbstractUser):
     role = models.CharField(
         max_length=255, default=Roles.DEVELOPER, choices=Roles.choices, db_index=True
     )
-    password = models.CharField(max_length=128, blank=True)
     REQUIRED_FIELDS = ["role", "email"]
 
     def __str__(self):
