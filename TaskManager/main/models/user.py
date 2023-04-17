@@ -8,15 +8,14 @@ class User(AbstractUser):
         MANAGER = "manager"
         ADMIN = "admin"
 
-    id = models.AutoField(auto_created=True, primary_key=True, serialize=False)
     role = models.CharField(
         max_length=255, default=Roles.DEVELOPER, choices=Roles.choices, db_index=True
     )
-
+    password = models.CharField(max_length=128, blank=True)
     REQUIRED_FIELDS = ["role", "email"]
 
     def __str__(self):
-        return f"{self.username} ({self.role})"
+        return f"{self.username}"
 
     class Meta:
         ordering = ["username", "id"]

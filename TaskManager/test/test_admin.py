@@ -15,8 +15,8 @@ class TestAdmin(APITestCase):
     def setUpTestData(cls) -> None:
         super().setUpTestData()
         cls.admin = User.objects.create_superuser(
-            "test@test.ru",
-            email=None,
+            username="test_admin",
+            email="test@test.ru",
             password=None,
         )
         cls.client = APIClient()
@@ -47,6 +47,8 @@ class TestAdmin(APITestCase):
 
 
     def test_task(self) -> None:
-        user = User.objects.create_user(username="testuser")
+        user = User.objects.create_user(
+            username="testuser", email="test@mail.com", password="test1234"
+        )
         task = Task.objects.create(assigned_by=user)
         self.assert_forms(Task, task.id)

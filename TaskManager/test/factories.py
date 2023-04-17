@@ -1,7 +1,6 @@
 import factory
 from faker import Faker
 from main.models import Task, User, Tag
-from django.contrib.auth import get_user_model
 
 fake = Faker()
 
@@ -10,9 +9,10 @@ class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = User
 
-    username = factory.Faker("name")
+    username = factory.Faker("user_name")
+    first_name = factory.Faker("first_name")
+    last_name = factory.Faker("last_name")
     email = factory.Faker("email")
-    password = factory.PostGenerationMethodCall("set_password", "test1234")
     role = factory.Faker(
         "random_element",
         elements=[choice[0] for choice in User.Roles.choices],
@@ -30,15 +30,14 @@ class TaskFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Task
 
-    title = "new"
+    title = fake.sentence(nb_words=4)
     assigned_by = factory.SubFactory(
         UserFactory, role=User.Roles.MANAGER, is_staff=True
     )
     assigned_to = factory.SubFactory(
         UserFactory, role=User.Roles.DEVELOPER, is_staff=False
     )
+
     tags = factory.SubFactory(TagFactory)
-    description = "Some description"
-    deadline_date = "2023-04-01T00:00:00Z"
-    state = Task.States.NEW
-    priority = Task.Priority.LOW
+    description = factory.Faker("text")
+    deadline_date = fake.date_time_this_decade().strftime("%Y-%m-%dT%H:%M:%SZ")

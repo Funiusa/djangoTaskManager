@@ -38,14 +38,17 @@ router = DefaultRouter()
 router.register(
     r"users",
     UserViewSet,
+    basename="users",
 )
 router.register(
     r"tasks",
     TaskViewSet,
+    basename="tasks",
 )
 router.register(
     r"tags",
     TagViewSet,
+    basename="tags",
 )
 
 urlpatterns = [
