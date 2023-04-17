@@ -6,7 +6,6 @@ from rest_framework.test import APIClient, APITestCase
 from main.models import User, Task, Tag
 
 
-
 class TestAdmin(APITestCase):
     client: APIClient
     admin: User
@@ -44,7 +43,6 @@ class TestAdmin(APITestCase):
     def test_tag(self) -> None:
         tag = Tag.objects.create()
         self.assert_forms(Tag, tag.id)
-
 
     def test_task(self) -> None:
         user = User.objects.create_user(
