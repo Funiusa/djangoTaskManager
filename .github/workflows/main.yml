@@ -10,37 +10,11 @@ on:
 
 
 jobs:
-  test-and-report:
-    name: Test and Report
+  tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
-      # Run tests
       - name: Run tests
         env:
           COVERAGE: true
         run: docker-compose --file docker-compose.ci.yml run --rm api make test
-
-      # Generate coverage report and upload to Coveralls
-      - name: Coveralls
-        run: |
-          cd TaskManager/
-          curl -sL https://coveralls.io/coveralls-linux.tar.gz | tar -xz && ./coveralls
-        env:
-          COVERAGE: true
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  coveralls:
-    name: Indicate completion to coveralls.io
-    needs: report
-    runs-on: ubuntu-latest
-    container: python:3-slim
-    steps:
-    - name: Finished
-      run: |
-        pip3 install --upgrade coveralls
-        coveralls --service=github --finish
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
