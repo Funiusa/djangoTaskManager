@@ -19,10 +19,11 @@ jobs:
         run: docker-compose --file docker-compose.ci.yml run --rm api make test
       - name: Download Coveralls script
         run: |
+          cd TaskManager/
           curl -sL -o coveralls.tar.gz https://coveralls.io/coveralls-linux.tar.gz
           tar -xzvf coveralls.tar.gz
       - name: Run Coveralls
-        run: ./coveralls --root=/coverage
+        run: ./coveralls
         env:
           COVERAGE: true
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
