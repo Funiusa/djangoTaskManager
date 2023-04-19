@@ -20,6 +20,7 @@ jobs:
       - name: Coveralls
         run: |
           cd TaskManager/
+          ls -la
           curl -sL https://coveralls.io/coveralls-linux.tar.gz | tar -xz && ./coveralls
         env:
           COVERAGE: true
