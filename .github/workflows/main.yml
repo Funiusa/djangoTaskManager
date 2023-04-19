@@ -10,23 +10,19 @@ on:
 
 
 jobs:
-  tests:
-    name: Main tests
+  test-and-report:
+    name: Test and Report
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
+      # Run tests
       - name: Run tests
         env:
           COVERAGE: true
         run: docker-compose --file docker-compose.ci.yml run --rm api make test
 
-  report:
-    name: Coveralls report
-    needs: tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      # Generate coverage report and upload to Coveralls
       - name: Coveralls
         run: |
           cd TaskManager/
