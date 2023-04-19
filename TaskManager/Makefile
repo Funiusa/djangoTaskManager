@@ -1,5 +1,7 @@
 test:
-	coverage run -m pytest
+	black .
+	coverage run --source=. -m pytest test/
 	coverage report
+	coverage lcov
 
 .PHONY: test

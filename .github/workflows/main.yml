@@ -17,4 +17,4 @@ jobs:
       - name: Run tests
         env:
           COVERAGE: true
-        run: docker-compose --file docker-compose.ci.yml run --rm api pytest
+        run: docker-compose --file docker-compose.ci.yml run --rm api make test
