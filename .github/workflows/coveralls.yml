@@ -20,14 +20,14 @@ jobs:
       - name: Coveralls
         env:
           COVERAGE: true
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COVERALLS_REPO_TOKEN: ${{ sects.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ env.COVERALLS_REPO_TOKEN }}
         run: |
           ls -la
           echo $COVERALLS_REPO_TOKEN
           echo $GITHUB_TOKEN
           echo ${{ secrets.COVERALLS_REPO_TOKEN }}
-          curl -sL https://coveralls.io/coveralls-linux.tar.gz | tar -xz && ./coveralls --root coverage
+          curl -sL https://coveralls.io/coveralls-linux.tar.gz | tar -xz && ./coveralls
 
 
   coveralls:
