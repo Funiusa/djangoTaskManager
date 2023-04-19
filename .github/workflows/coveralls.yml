@@ -18,16 +18,15 @@ jobs:
       - name: Get report file
         run: docker-compose --file docker-compose.ci.yml run --rm api make test
       - name: Coveralls
+        run: |
+          cd TaskManager/
+          echo $COVERALLS_REPO_TOKEN
+
+          curl -sL https://coveralls.io/coveralls-linux.tar.gz | tar -xz && ./coveralls
         env:
           COVERAGE: true
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+          COVERALLS_REPO_TOKEN: ${{ env.COVERALLS_REPO_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo $COVERALLS_REPO_TOKEN
-          cd TaskManager/
-          ls -la
-          curl -sL https://coveralls.io/coveralls-linux.tar.gz | tar -xz && ./coveralls
-
 
   coveralls:
     name: Indicate completion to coveralls.io
