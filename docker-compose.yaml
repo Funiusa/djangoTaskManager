@@ -19,7 +19,7 @@ services:
       DATABASE_PASSWORD: postgres
       DATABASE_HOST: db
       DATABASE_PORT: 5432
-    command: python manage.py runserver 0.0.0.0:8000
+    command: newrelic-admin run-program python manage.py runserver 0.0.0.0:8000
 
   db:
     image: postgres:11.4
@@ -28,3 +28,14 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+
+  newrelic-infra:
+    image: newrelic/infrastructure:latest
+    network_mode: host
+    privileged: true
+    pid: host
+    volumes:
+      - "/:/host:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    environment:
+      NRIA_LICENSE_KEY: eu01xxd85aff39dc827362ee1fae8eac3f98NRAL
