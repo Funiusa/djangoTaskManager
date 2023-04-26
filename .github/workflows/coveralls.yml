@@ -12,14 +12,14 @@ jobs:
   report:
     name: Coveralls report
     runs-on: ubuntu-latest
+    env:
+      COVERAGE: true
+      COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Get report file
-        env:
-          COVERAGE: true
-          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
         run: docker-compose --file docker-compose.ci.yml run --rm api make test
       - name: Run Coveralls
         run: |
