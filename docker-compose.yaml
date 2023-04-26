@@ -13,7 +13,7 @@ services:
       - db
     environment: &api-environment
       DJANGO_ENV: dev
-      DJANGO_SECRET_KEY: secret_key
+      DJANGO_SECRET_KEY: "{{ DJANGO_SECRET_KEY }}"
       DATABASE_NAME: postgres
       DATABASE_USER: postgres
       DATABASE_PASSWORD: postgres
@@ -38,4 +38,4 @@ services:
       - "/:/host:ro"
       - "/var/run/docker.sock:/var/run/docker.sock"
     environment:
-      NRIA_LICENSE_KEY: eu01xxd85aff39dc827362ee1fae8eac3f98NRAL
+      NRIA_LICENSE_KEY: "{{ NRIA_LICENSE_KEY }}"

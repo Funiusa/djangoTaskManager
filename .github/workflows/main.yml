@@ -17,4 +17,5 @@ jobs:
       - name: Run tests
         env:
           COVERAGE: true
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
         run: docker-compose --file docker-compose.ci.yml run --rm api pytest
