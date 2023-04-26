@@ -13,7 +13,7 @@ services:
       - db
     environment: &api-environment
       DJANGO_ENV: dev
-      DJANGO_SECRET_KEY: secret_key
+      DJANGO_SECRET_KEY: ${SECRET_KEY}
       DATABASE_NAME: postgres
       DATABASE_USER: postgres
       DATABASE_PASSWORD: postgres
