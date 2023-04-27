@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser
+from main.services.storage_backends import public_storage
 from django.db import models
 
 
@@ -13,6 +14,7 @@ class User(AbstractUser):
     role = models.CharField(
         max_length=255, default=Roles.DEVELOPER, choices=Roles.choices, db_index=True
     )
+    avatar_picture = models.ImageField(null=True, storage=public_storage)
     REQUIRED_FIELDS = ["role", "email"]
 
     def __str__(self):
