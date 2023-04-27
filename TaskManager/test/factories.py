@@ -1,6 +1,6 @@
 import factory
 from faker import Faker
-from main.models import Task, User, Tag
+from main.models import Task, User, Tag, Developer
 from django.contrib.auth.hashers import make_password
 
 fake = Faker()
@@ -23,6 +23,16 @@ class UserFactory(factory.django.DjangoModelFactory):
     phone = fake.phone_number()[:20]
 
 
+class DeveloperFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Developer
+
+    username = factory.Faker("user_name")
+    email = factory.Faker("email")
+    role = User.Roles.DEVELOPER
+    is_staff = False
+
+
 class TagFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Tag
@@ -35,13 +45,26 @@ class TaskFactory(factory.django.DjangoModelFactory):
         model = Task
 
     title = fake.sentence(nb_words=4)
-    assigned_by = factory.SubFactory(
-        UserFactory, role=User.Roles.MANAGER, is_staff=True
-    )
-    assigned_to = factory.SubFactory(
-        UserFactory, role=User.Roles.DEVELOPER, is_staff=False
-    )
-
-    tags = factory.SubFactory(TagFactory)
+    assigned_by = factory.SubFactory(UserFactory, role=User.Roles.MANAGER)
+    state = Task.States.NEW
+    priority = Task.Priority.LOW
     description = factory.Faker("text")
     deadline_date = fake.date_time_this_decade().strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    @factory.post_generation
+    def assigned_to(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for developer in extracted:
+                self.assigned_to.add(developer)
+
+    @factory.post_generation
+    def tags(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for tag in extracted:
+                self.tags.add(tag)
