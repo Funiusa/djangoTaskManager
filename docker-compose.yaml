@@ -11,9 +11,10 @@ services:
       - "8000:8000"
     depends_on:
       - db
+    env_file:
+      - .env
     environment: &api-environment
       DJANGO_ENV: dev
-      DJANGO_SECRET_KEY: "{{ DJANGO_SECRET_KEY }}"
       DATABASE_NAME: postgres
       DATABASE_USER: postgres
       DATABASE_PASSWORD: postgres
@@ -37,5 +38,5 @@ services:
     volumes:
       - "/:/host:ro"
       - "/var/run/docker.sock:/var/run/docker.sock"
-    environment:
-      NRIA_LICENSE_KEY: "{{ NRIA_LICENSE_KEY }}"
+    env_file:
+      - .env
