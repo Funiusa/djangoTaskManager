@@ -15,7 +15,7 @@ class TestTagViewSet(TestViewSetBase):
 
     def test_list_tag(self):
         response = self.list(self.tag_attributes.get("args"))
-        self.assertEqual(response, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create_tag(self):
         tag = self.create(self.tag_attributes)
