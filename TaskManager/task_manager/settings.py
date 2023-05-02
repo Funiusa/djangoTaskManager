@@ -184,7 +184,7 @@ if DJANGO_ENV != "dev":
     AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
     AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
     AWS_STORAGE_BUCKET_NAME = os.environ["AWS_STORAGE_BUCKET_NAME"]
-    AWS_S3_REGION_NAME = os.environ["AWS_REGION_NAME"]
+    AWS_CELERY_S3_REGION_NAME = os.environ["AWS_REGION_NAME"]
     AWS_DEFAULT_ACL = "private"
 else:
     DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
@@ -194,3 +194,6 @@ else:
 UPLOAD_MAX_SIZES: dict[str, int] = {
     "avatar_picture": 1 * 1024 * 1024,
 }
+
+CELERY_BROKER_URL = f"redis://{os.environ['REDIS_HOST']}:{os.environ['REDIS_PORT']}/0"
+CELERY_INCLUDE = ["task_manager.tasks"]
