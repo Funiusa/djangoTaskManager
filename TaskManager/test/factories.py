@@ -3,7 +3,12 @@ from faker import Faker
 from main.models import Task, User, Tag, Developer
 from django.contrib.auth.hashers import make_password
 
+
+from test.base import ImageFileProvider
+
 fake = Faker()
+
+factory.Faker.add_provider(ImageFileProvider)
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -20,6 +25,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     )
     password = factory.LazyFunction(lambda: make_password("password"))
     date_of_birth = fake.date_of_birth().strftime("%Y-%m-%d")
+    avatar_picture = factory.Faker("image_file", fmt="jpeg")
     phone = fake.phone_number()[:20]
 
 

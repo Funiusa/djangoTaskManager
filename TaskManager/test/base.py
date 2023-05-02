@@ -1,9 +1,20 @@
 from http import HTTPStatus
 from typing import Union, List
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase, APIClient
 from main.models import User
+from faker.providers import BaseProvider
+
+
+class ImageFileProvider(BaseProvider):
+    def image_file(self, fmt: str = "jpeg") -> SimpleUploadedFile:
+        return SimpleUploadedFile(
+            self.generator.file_name(extension=fmt),
+            self.generator.image(image_format=fmt),
+            content_type="image/jpeg",
+        )
 
 
 class TestViewSetBase(APITestCase):
@@ -49,7 +60,9 @@ class TestViewSetBase(APITestCase):
             self.authenticate_user(user)
         else:
             self.authenticate_user(self.admin)
-        response = self.client.patch(self.detail_url(key=key), data=data, format="json")
+        response = self.client.patch(
+            self.detail_url(key=key), data=data, format="multipart"
+        )
         assert response.status_code == HTTPStatus.OK, response.content
         return response.data
 

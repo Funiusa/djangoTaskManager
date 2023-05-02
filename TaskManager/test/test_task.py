@@ -3,7 +3,7 @@ from rest_framework import status
 from main.models import User
 from main.views import TaskFilter
 from test.base import TestViewSetBase
-from test.factories import TaskFactory, UserFactory, TagFactory, fake
+from test.factories import TaskFactory, UserFactory, TagFactory, fake, DeveloperFactory
 
 
 class TestTaskViewSet(TestViewSetBase):
