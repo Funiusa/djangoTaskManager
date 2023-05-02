@@ -41,7 +41,7 @@ class TestUserViewSet(TestViewSetBase):
 
     def test_list_users(self):
         response = self.list(self.user_attributes.get("args"))
-        self.assertEqual(response, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_retrieve_users(self):
         user_attributes = factory.build(dict, FACTORY_CLASS=UserFactory)

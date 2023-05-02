@@ -40,7 +40,7 @@ class TestTaskViewSet(TestViewSetBase):
 
     def test_list_task(self):
         response = self.list(self.task_attributes.get("args"))
-        self.assertEqual(response, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create_task(self):
         task = self.create(self.task_attributes)

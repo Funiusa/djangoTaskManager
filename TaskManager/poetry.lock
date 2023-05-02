@@ -446,6 +446,21 @@ python-jose = ["python-jose (==3.3.0)"]
 test = ["cryptography", "pytest", "pytest-cov", "pytest-django", "pytest-xdist", "tox"]
 
 [[package]]
+name = "drf-extensions"
+version = "0.7.1"
+description = "Extensions for Django REST Framework"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "drf-extensions-0.7.1.tar.gz", hash = "sha256:90abfc11a2221e8daf4cd54457e41ed38cd71134678de9622e806193db027db1"},
+    {file = "drf_extensions-0.7.1-py2.py3-none-any.whl", hash = "sha256:007910437e64aa1d5ad6fc47266a4ac4280e31761e6458eb30fcac7494ac7d4e"},
+]
+
+[package.dependencies]
+djangorestframework = ">=3.9.3"
+
+[[package]]
 name = "drf-yasg"
 version = "1.21.5"
 description = "Automated generation of real Swagger/OpenAPI 2.0 schemas from Django Rest Framework code."
@@ -1400,4 +1415,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "6f553d9e4b95b9200ec63fcdb159831c3db068d7b9667d6671f4a1944139a5e0"
+content-hash = "6f727d7fb3fcc0da118042dac8a421411d0747d458d27ec32ab81024280b0122"

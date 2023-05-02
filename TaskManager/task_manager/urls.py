@@ -14,10 +14,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include, re_path
-from rest_framework.routers import DefaultRouter
+from django.urls import path, include
 
-from main.views import UserViewSet, TaskViewSet, TagViewSet
+from main.services.single_resource import BulkRouter
+from main import views
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -38,22 +38,36 @@ schema_view = get_schema_view(
     permission_classes=[permissions.AllowAny],
 )
 
-router = DefaultRouter()
-router.register(
+router = BulkRouter()
+users = router.register(
     r"users",
-    UserViewSet,
+    views.UserViewSet,
     basename="users",
+)
+users.register(
+    r"tasks",
+    views.UserTasksViewSet,
+    basename="user_tasks",
+    parents_query_lookups=["assigned_by_id"],
+)
+tasks = router.register(r"tasks", views.TaskViewSet, basename="tasks")
+tasks.register(
+    r"tags",
+    views.TaskTagsViewSet,
+    basename="task_tags",
+    parents_query_lookups=["task_id"],
 )
 router.register(
     r"tasks",
-    TaskViewSet,
+    views.TaskViewSet,
     basename="tasks",
 )
 router.register(
     r"tags",
-    TagViewSet,
+    views.TagViewSet,
     basename="tags",
 )
+router.register(r"current-user", views.CurrentUserViewSet, basename="current_user")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
