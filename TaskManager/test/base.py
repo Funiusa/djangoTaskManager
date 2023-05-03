@@ -130,8 +130,10 @@ class TestViewSetBase(APITestCase):
         response = self.client.delete(self.detail_url_list(args=args))
         return response
 
-    def request_create(self, data: dict, args) -> Response:
+    def request_create(
+        self, data: dict, args: List[Union[str, int]] = None
+    ) -> Response:
         self.authenticate_user(self.admin)
-        url = self.detail_url_list(args=args)
-        response = self.client.post(url, data)
+        response = self.client.post(self.list_url(args=args), data=data)
+        assert response.status_code == HTTPStatus.CREATED, response.conten
         return response
