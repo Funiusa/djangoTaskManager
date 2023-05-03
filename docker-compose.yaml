@@ -11,6 +11,8 @@ services:
       - "8000:8000"
     depends_on:
       - db
+      - celery
+      - redis
     env_file:
       - .env
     environment: &api-environment
@@ -20,6 +22,8 @@ services:
       DATABASE_PASSWORD: postgres
       DATABASE_HOST: db
       DATABASE_PORT: 5432
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     command: newrelic-admin run-program python manage.py runserver 0.0.0.0:8000
 
   db:
@@ -40,3 +44,32 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock"
     env_file:
       - .env
+
+  redis:
+    image: redis:6-alpine
+    ports:
+    - "6379:6379"
+
+  celery:
+    build: .
+    working_dir: /app/TaskManager
+    command: celery -A task_manager worker --loglevel=info
+    environment:
+      <<: *api-environment
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+
+  flower:
+    build: .
+    working_dir: /app/TaskManager
+    command: celery -A task_manager --broker=redis://redis:6379/0 flower --port=5555
+    environment:
+      <<: *api-environment
+    volumes:
+      - .:/app
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis
