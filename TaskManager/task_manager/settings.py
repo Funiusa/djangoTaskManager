@@ -197,3 +197,7 @@ UPLOAD_MAX_SIZES: dict[str, int] = {
 
 CELERY_BROKER_URL = f"redis://{os.environ['REDIS_HOST']}:{os.environ['REDIS_PORT']}/0"
 CELERY_INCLUDE = ["task_manager.tasks"]
+CELERY_ACCEPT_CONTENT = ["json", "yaml"]
+CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+CELERY_TASK_TRACK_STARTED = True
+CELERY_SEND_TASK_SENT_EVENT = True

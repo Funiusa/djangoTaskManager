@@ -68,6 +68,8 @@ router.register(
     basename="tags",
 )
 router.register(r"current-user", views.CurrentUserViewSet, basename="current_user")
+router.register(r"countdown", views.CountdownJobViewSet, basename="countdown")
+router.register(r"jobs", views.AsyncJobViewSet, basename="jobs")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
