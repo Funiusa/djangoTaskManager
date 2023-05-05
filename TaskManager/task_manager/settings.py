@@ -76,6 +76,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "rollbar.contrib.django.middleware.RollbarNotifierMiddleware",
+    "task_manager.log_utils.LoggingMiddleware",
 ]
 
 ROOT_URLCONF = "task_manager.urls"
@@ -201,3 +202,30 @@ CELERY_ACCEPT_CONTENT = ["json", "yaml"]
 CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 CELERY_TASK_TRACK_STARTED = True
 CELERY_SEND_TASK_SENT_EVENT = True
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "task_manager": {
+            "()": "task_manager.log_utils.RequestFormatter",
+            "format": (
+                "{asctime} {levelname} method={request.method} duration_time={duration} "
+                "path={request.path_info} view={view.__qualname__} "
+                "user_id={user_id} user_email={user_email} remote={remote_addr} "
+                "{message}"
+            ),
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "formatter": "task_manager",
+            "class": "logging.StreamHandler",
+        }
+    },
+    "loggers": {
+        "django.server": {"level": "INFO", "handlers": ["console"]},
+    },
+}
