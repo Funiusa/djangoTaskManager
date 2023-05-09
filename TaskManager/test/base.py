@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from typing import Union, List
+from typing import Union, List, Optional
 from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework.response import Response
 
@@ -18,19 +18,30 @@ class ImageFileProvider(BaseProvider):
         )
 
 
+class ActionClient:
+    def __init__(self, api_client: APIClient) -> None:
+        self.user: Optional[User] = None
+        self.api_client = api_client
+
+    def init_user(self):
+        self.user = User.objects.create_superuser(
+            username="test_admin", email="admin@example.com", password="pass1234"
+        )
+        self.api_client.force_authenticate(user=self.user)
+
+
 class TestViewSetBase(APITestCase):
-    user: User = None
-    client: APIClient = None
-    basename: str
-    admin: User = None
+    action_client: Optional[ActionClient] = None
+    api_client: APIClient = None
+    basename = str
 
     @classmethod
     def setUpTestData(cls) -> None:
         super().setUpTestData()
-        cls.client = APIClient()
-        cls.admin = User.objects.create_superuser(
-            username="admin", email="admin@example.com", password="pass1234"
-        )
+        cls.api_client = APIClient()
+        cls.action_client = ActionClient(cls.api_client)
+        cls.action_client.init_user()
+        cls.user = cls.action_client.user
 
     @classmethod
     def detail_url(cls, key: Union[int, str]) -> str:
@@ -44,96 +55,77 @@ class TestViewSetBase(APITestCase):
     def list_url(cls, args: List[Union[str, int]] = None) -> str:
         return reverse(f"{cls.basename}-list", args=args)
 
-    def authenticate_user(self, user: User) -> None:
-        self.client.force_authenticate(user)
+    def request_create(
+        self, data: dict, args: List[Union[str, int]] = None
+    ) -> Response:
+        url = self.list_url(args)
+        return self.api_client.post(url, data=data)
 
-    def create(
-        self, data: dict, args: List[Union[str, int]] = None, user: User = None
-    ) -> dict:
-        if user:
-            self.authenticate_user(user)
-        else:
-            self.authenticate_user(self.admin)
-        response = self.client.post(self.list_url(args=args), data=data)
+    def request_update(self, data: dict, key: Union[int, str] = None) -> Response:
+        url = self.detail_url(key)
+        return self.api_client.patch(url, data=data)
+
+    def request_update_list(self, data: dict, args: List[Union[int, str]]) -> Response:
+        url = self.detail_url_list(args=args)
+        response = self.api_client.patch(url, data=data)
+        return response
+
+    def request_delete_list(self, args: List[Union[int, str]]) -> Response:
+        url = self.detail_url_list(args=args)
+        response = self.api_client.delete(url)
+        return response
+
+    def request_retrieve_list(self, args: List[Union[int, str]]) -> Response:
+        url = self.detail_url_list(args=args)
+        response = self.api_client.get(url)
+        return response
+
+    def request_list(self, args: List[Union[str, int]] = None) -> Response:
+        url = self.list_url(args)
+        return self.api_client.get(url)
+
+    def request_retrieve(self, key: Union[int, str] = None) -> Response:
+        url = self.detail_url(key)
+        return self.api_client.get(url)
+
+    def request_delete(self, key: Union[int, str] = None) -> Response:
+        url = self.detail_url(key)
+        return self.api_client.delete(url)
+
+    def create(self, data: dict, args: List[Union[str, int]] = None) -> dict:
+        response = self.request_create(data, args)
         assert response.status_code == HTTPStatus.CREATED, response.content
         return response.data
 
-    def update(
-        self, data: dict, key: Union[int, str] = None, user: User = None
-    ) -> dict:
-        if user:
-            self.authenticate_user(user)
-        else:
-            self.authenticate_user(self.admin)
-        response = self.client.patch(
-            self.detail_url(key=key), data=data, format="multipart"
-        )
+    def update(self, data: dict, key: Union[int, str] = None) -> dict:
+        response = self.request_update(data, key)
         assert response.status_code == HTTPStatus.OK, response.content
         return response.data
 
-    def list(self, args: List[Union[str, int]] = None, user: User = None) -> Response:
-        if user:
-            self.authenticate_user(user)
-        else:
-            self.authenticate_user(self.admin)
-        response = self.client.get(self.list_url(args=args))
+    def list(self, args: List[Union[str, int]] = None) -> Response:
+        response = self.request_list(args)
         return response
 
-    def retrieve(self, key: Union[int, str] = None, user: User = None) -> dict:
-        if user:
-            self.authenticate_user(user)
-        else:
-            self.authenticate_user(self.admin)
-        response = self.client.get(self.detail_url(key=key))
-        return response.status_code
+    def retrieve(self, key: Union[int, str] = None) -> Response:
+        response = self.request_retrieve(key)
+        return response
 
-    def delete(self, key: Union[int, str] = None, user: User = None) -> dict:
-        if user:
-            self.authenticate_user(user)
-        else:
-            self.authenticate_user(self.admin)
-        response = self.client.delete(self.detail_url(key=key))
-        return response.status_code
+    def delete(self, key: Union[int, str] = None) -> Response:
+        response = self.request_delete(key)
+        return response
 
     def request_single_resource(self, data: dict = None) -> Response:
-        return self.client.get(self.list_url(), data=data)
+        return self.api_client.get(self.list_url(), data=data)
 
     def single_resource(self, data: dict = None) -> dict:
-        self.user = self.admin
-        self.authenticate_user(self.user)
         response = self.request_single_resource(data)
         assert response.status_code == HTTPStatus.OK
         return response.data
 
     def request_patch_single_resource(self, attributes: dict) -> Response:
-        self.authenticate_user(self.admin)
-        url = self.list_url()
-        return self.client.patch(url, data=attributes)
+        return self.api_client.patch(self.list_url(), data=attributes)
 
     def patch_single_resource(self, attributes: dict) -> dict:
         response = self.request_patch_single_resource(attributes)
         assert response.status_code == HTTPStatus.OK, response.content
         return response.data
-
-    def request_retrieve(self, args: List[Union[int, str]]) -> Response:
-        self.authenticate_user(self.admin)
-        response = self.client.get(self.detail_url_list(args=args))
-        return response
-
-    def request_update(self, data: dict, args: List[Union[int, str]]) -> Response:
-        self.authenticate_user(self.admin)
-        response = self.client.patch(self.detail_url_list(args=args), data=data)
-        return response
-
-    def request_delete(self, args: List[Union[int, str]]) -> Response:
-        self.authenticate_user(self.admin)
-        response = self.client.delete(self.detail_url_list(args=args))
-        return response
-
-    def request_create(
-        self, data: dict, args: List[Union[str, int]] = None
-    ) -> Response:
-        self.authenticate_user(self.admin)
-        response = self.client.post(self.list_url(args=args), data=data)
-        assert response.status_code == HTTPStatus.CREATED, response.conten
-        return response

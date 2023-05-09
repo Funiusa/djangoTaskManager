@@ -8,6 +8,7 @@ from test.factories import TaskFactory, TagFactory
 
 class TestTaskTagsViewSet(TestViewSetBase):
     basename = "task_tags"
+    tag_attributes = factory.build(dict, FACTORY_CLASS=TagFactory)
 
     def setUp(self):
         self.task = TaskFactory.create()
@@ -15,18 +16,19 @@ class TestTaskTagsViewSet(TestViewSetBase):
         self.tag2 = TagFactory.create()
 
     def test_create(self) -> None:
-        tag_attributes = factory.build(dict, FACTORY_CLASS=TagFactory)
-        tag = self.create(data=tag_attributes, args=[self.task.id], user=self.admin)
+        tag = self.create(data=self.tag_attributes, args=[self.task.id])
         tag_id = tag.get("id")
         tag = Tag.objects.get(pk=tag_id)
-        assert tag.title == tag_attributes.get("title")
+        assert tag.title == self.tag_attributes.get("title")
 
     def test_update(self) -> None:
         self.add_tags(self.task, [self.tag1])
         tag_id = self.tag1.id
         new_title = "New Tag Title"
         updated_data = {"title": new_title}
-        response = self.request_update(data=updated_data, args=[self.task.id, tag_id])
+        response = self.request_update_list(
+            data=updated_data, args=[self.task.id, tag_id]
+        )
         updated_tag = self.task.tags.filter(pk=tag_id).first()
         assert response.status_code == status.HTTP_200_OK
         serializer_tag = TagSerializer(updated_tag)
@@ -34,7 +36,7 @@ class TestTaskTagsViewSet(TestViewSetBase):
 
     def test_delete(self) -> None:
         self.add_tags(self.task, [self.tag1, self.tag2])
-        response = self.request_delete(args=[self.task.id, self.tag1.id])
+        response = self.request_delete_list(args=[self.task.id, self.tag1.id])
         assert response.status_code == status.HTTP_204_NO_CONTENT
 
         self.task.refresh_from_db()
@@ -50,7 +52,7 @@ class TestTaskTagsViewSet(TestViewSetBase):
 
     def test_retrieve(self) -> None:
         self.add_tags(self.task, [self.tag1, self.tag2])
-        retrieved_tag = self.request_retrieve(args=[self.task.id, self.tag2.id])
+        retrieved_tag = self.request_retrieve_list(args=[self.task.id, self.tag2.id])
         assert retrieved_tag.status_code == status.HTTP_200_OK
 
     @staticmethod

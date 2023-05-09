@@ -3,14 +3,13 @@ from rest_framework import status
 from main.models import User
 from main.views import TaskFilter
 from test.base import TestViewSetBase
-from test.factories import TaskFactory, UserFactory, TagFactory, fake, DeveloperFactory
+from test.factories import TaskFactory, UserFactory, TagFactory, fake
 
 
 class TestTaskViewSet(TestViewSetBase):
     basename = "tasks"
 
     def setUp(self):
-        self.admin = UserFactory(role=User.Roles.ADMIN, is_staff=True)
         self.manager = UserFactory(role=User.Roles.MANAGER, is_staff=True)
         self.developer = UserFactory(role=User.Roles.DEVELOPER, is_staff=False)
         self.tag = TagFactory()
@@ -19,7 +18,7 @@ class TestTaskViewSet(TestViewSetBase):
             dict,
             FACTORY_CLASS=TaskFactory,
             assigned_to=[self.developer.username],
-            assigned_by=self.admin.username,
+            assigned_by=self.user.username,
             state="new_task",
             priority="low",
             tags=[self.tag.title],
@@ -28,7 +27,7 @@ class TestTaskViewSet(TestViewSetBase):
             dict,
             FACTORY_CLASS=TaskFactory,
             assigned_to=[self.developer.username],
-            assigned_by=self.admin.username,
+            assigned_by=self.user.username,
             state="in_qa",
             priority="high",
             tags=[self.tag.title],
@@ -61,13 +60,13 @@ class TestTaskViewSet(TestViewSetBase):
         task = self.create(self.task_attributes)
         task_pk = task.get("id")
         response = self.retrieve(task_pk)
-        self.assertEqual(response, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_delete_task(self):
         task = self.create(self.task_attributes)
         task_pk = task.get("id")
         response = self.delete(task_pk)
-        self.assertEqual(response, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_task_filter_state(self):
         state_list = [
@@ -105,8 +104,8 @@ class TestTaskViewSet(TestViewSetBase):
         managers = [manager1, manager1, manager3]
         for i in range(3):
             self.task_attributes["title"] = fake.sentence(nb_words=2)
-            self.client.force_authenticate(managers[i])
-            self.create(self.task_attributes, user=managers[i])
+            self.api_client.force_authenticate(managers[i])
+            self.create(self.task_attributes)
 
         filter = TaskFilter({"assigned_by": "manager1"})
         qs = filter.qs

@@ -1,10 +1,8 @@
 from http import HTTPStatus
 
-import factory
-
 from main.serializer import TaskSerializer
 from test.base import TestViewSetBase
-from test.factories import UserFactory, TaskFactory, fake
+from test.factories import UserFactory, TaskFactory
 
 
 class TestUserTasksViewSet(TestViewSetBase):
@@ -23,7 +21,7 @@ class TestUserTasksViewSet(TestViewSetBase):
         user = UserFactory.create()
         task = TaskFactory.create()
 
-        response = self.request_retrieve(args=[task.id, user.id])
+        response = self.request_retrieve_list(args=[task.id, user.id])
 
         assert response.status_code == HTTPStatus.NOT_FOUND
 
@@ -31,7 +29,7 @@ class TestUserTasksViewSet(TestViewSetBase):
         user = UserFactory.create(role="manager")
         task = TaskFactory.create(assigned_by_id=user.id)
 
-        retrieved_task = self.request_retrieve(args=[user.id, task.id])
+        retrieved_task = self.request_retrieve_list(args=[user.id, task.id])
         assert retrieved_task.status_code == HTTPStatus.OK
         serializer = TaskSerializer(task)
         assert serializer.data == retrieved_task.data
@@ -41,7 +39,9 @@ class TestUserTasksViewSet(TestViewSetBase):
         task = TaskFactory.create(assigned_by_id=user.id, state="archived")
 
         update_attributes = {"state": "in_qa"}
-        response = self.request_update(data=update_attributes, args=[user.id, task.id])
+        response = self.request_update_list(
+            data=update_attributes, args=[user.id, task.id]
+        )
         assert response.status_code == HTTPStatus.OK
         assert response.data["assigned_by"] == user.username
         assert response.data["state"] == "in_qa"
@@ -50,5 +50,5 @@ class TestUserTasksViewSet(TestViewSetBase):
         user = UserFactory.create(role="manager")
         task = TaskFactory.create(assigned_by_id=user.id)
 
-        response = self.request_delete(args=[user.id, task.id])
+        response = self.request_delete_list(args=[user.id, task.id])
         assert response.status_code == HTTPStatus.NO_CONTENT
