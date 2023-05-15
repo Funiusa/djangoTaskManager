@@ -2,8 +2,8 @@ from http import HTTPStatus
 
 import factory
 from django.core.files.uploadedfile import SimpleUploadedFile
-from rest_framework import status
 
+from main.models import User
 from main.views import UserFilter
 from test.base import TestViewSetBase
 from test.factories import UserFactory
@@ -37,28 +37,43 @@ class TestUserViewSet(TestViewSetBase):
         assert update_user == expected_response
 
     def test_list_users(self) -> None:
+        usernames = ["Ricky", "Tiki", "Tavi"]
+        for username in usernames:
+            user_attributes = factory.build(
+                dict, FACTORY_CLASS=UserFactory, username=username
+            )
+            self.create(user_attributes)
+
         response = self.list(self.user_attributes.get("args"))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_usernames = [data["username"] for data in response.data]
+        usernames.insert(0, self.user.username)
+
+        assert len(response.data) == User.objects.count()
+        assert response_usernames == usernames
 
     def test_retrieve_users(self) -> None:
         user_attributes = factory.build(dict, FACTORY_CLASS=UserFactory)
         user = self.create(user_attributes)
         user_pk = user.get("id")
         response = self.retrieve(user_pk)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        expected_response = self.expected_details(user, user_attributes)
+        assert response.data == expected_response
 
     def test_delete_user(self) -> None:
         user_attributes = factory.build(dict, FACTORY_CLASS=UserFactory)
         user = self.create(user_attributes)
         user_pk = user.get("id")
+        response = self.retrieve(user_pk)
+        assert response.data.get("id") == user_pk
+
         response = self.delete(user_pk)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        assert response.data is None
 
     def test_avatar_picture(self) -> None:
         user = UserFactory.build()
         user.avatar_picture = "myavatar.png"
         user.save()
-        self.assertIsNotNone(user.avatar_picture)
+        assert user.avatar_picture is not None
 
     def test_large_avatar(self) -> None:
         user_attributes = factory.build(
@@ -90,12 +105,12 @@ class TestUserViewSet(TestViewSetBase):
 
         filter = UserFilter({"username": "j"})
         qs = filter.qs
-        self.assertEqual(qs.count(), 4)
+        assert qs.count() == 4
 
         filter = UserFilter({"username": "2"})
         qs = filter.qs
-        self.assertEqual(qs.count(), 1)
+        assert qs.count() == 1
 
         filter = UserFilter({"username": "xyz"})
         qs = filter.qs
-        self.assertEqual(qs.count(), 0)
+        assert qs.count() == 0

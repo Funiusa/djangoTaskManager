@@ -39,7 +39,7 @@ class TestTaskViewSet(TestViewSetBase):
 
     def test_list_task(self):
         response = self.list(self.task_attributes.get("args"))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        assert response.status_code == status.HTTP_200_OK
 
     def test_create_task(self):
         task = self.create(self.task_attributes)
@@ -60,13 +60,17 @@ class TestTaskViewSet(TestViewSetBase):
         task = self.create(self.task_attributes)
         task_pk = task.get("id")
         response = self.retrieve(task_pk)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        expected_response = self.expected_details(task, self.task_attributes)
+        assert expected_response == response.data
 
     def test_delete_task(self):
         task = self.create(self.task_attributes)
         task_pk = task.get("id")
+        response = self.retrieve(task_pk)
+        assert response.data.get("id") == task_pk
+
         response = self.delete(task_pk)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        assert response.data is None
 
     def test_task_filter_state(self):
         state_list = [
@@ -84,15 +88,15 @@ class TestTaskViewSet(TestViewSetBase):
 
         filter = TaskFilter({"state": "new_task"})
         qs = filter.qs
-        self.assertEqual(qs.count(), 2)
+        assert qs.count() == 2
 
         filter = TaskFilter({"state": "released"})
         qs = filter.qs
-        self.assertEqual(qs.count(), 3)
+        assert qs.count() == 3
 
         filter = TaskFilter({"state": "in_qa"})
         qs = filter.qs
-        self.assertEqual(qs.count(), 1)
+        assert qs.count() == 1
 
     def test_task_filter_assigned_by(self):
         manager1 = UserFactory(
@@ -109,15 +113,15 @@ class TestTaskViewSet(TestViewSetBase):
 
         filter = TaskFilter({"assigned_by": "manager1"})
         qs = filter.qs
-        self.assertEqual(qs.count(), 2)
+        assert qs.count() == 2
 
         filter = TaskFilter({"assigned_by": "manager3"})
         qs = filter.qs
-        self.assertEqual(qs.count(), 1)
+        assert qs.count() == 1
 
         filter = TaskFilter({"assigned_by": "manager2"})
         qs = filter.qs
-        self.assertEqual(qs.count(), 0)
+        assert qs.count() == 0
 
     def test_task_filter_assigned_to(self):
         developer1 = UserFactory(
@@ -135,11 +139,11 @@ class TestTaskViewSet(TestViewSetBase):
 
         filter = TaskFilter({"assigned_to": "dev1"})
         qs = filter.qs
-        self.assertEqual(qs.count(), 2)
+        assert qs.count() == 2
 
         filter = TaskFilter({"assigned_to": "dev2"})
         qs = filter.qs
-        self.assertEqual(qs.count(), 1)
+        assert qs.count() == 1
 
     def test_task_filter_tag(self):
         tag1 = TagFactory(title="fix")
@@ -152,12 +156,12 @@ class TestTaskViewSet(TestViewSetBase):
 
         filter = TaskFilter({"tags": "fix"})
         qs = filter.qs
-        self.assertEqual(qs.count(), 2)
+        assert qs.count() == 2
 
         filter = TaskFilter({"tags": "create"})
         qs = filter.qs
-        self.assertEqual(qs.count(), 1)
+        assert qs.count() == 1
 
         filter = TaskFilter({"tags": "update"})
         qs = filter.qs
-        self.assertEqual(qs.count(), 0)
+        assert qs.count() == 0

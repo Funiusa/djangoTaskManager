@@ -104,14 +104,17 @@ class TestViewSetBase(APITestCase):
 
     def list(self, args: List[Union[str, int]] = None) -> Response:
         response = self.request_list(args)
+        assert response.status_code == HTTPStatus.OK, response.content
         return response
 
     def retrieve(self, key: Union[int, str] = None) -> Response:
         response = self.request_retrieve(key)
+        assert response.status_code == HTTPStatus.OK, response.content
         return response
 
     def delete(self, key: Union[int, str] = None) -> Response:
         response = self.request_delete(key)
+        assert response.status_code == HTTPStatus.NO_CONTENT, response.content
         return response
 
     def request_single_resource(self, data: dict = None) -> Response:

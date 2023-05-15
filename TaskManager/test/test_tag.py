@@ -1,5 +1,5 @@
 import factory
-from rest_framework import status
+from main.models import Tag
 from test.base import TestViewSetBase
 from test.factories import TagFactory
 
@@ -29,17 +29,28 @@ class TestTagViewSet(TestViewSetBase):
         assert update_tag == expected_response
 
     def test_list_tag(self):
+        titles = ["some", "new", "tags"]
+        for title in titles:
+            self.tag_attributes["title"] = title
+            self.create(self.tag_attributes)
         response = self.list(self.tag_attributes.get("args"))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        count = len(response.data)
+        assert count == Tag.objects.count()
+        response_titles = [data["title"] for data in response.data]
+        assert response_titles == titles
 
     def test_retrieve_tag(self):
         tag = self.create(self.tag_attributes)
         tag_pk = tag.get("id")
         response = self.retrieve(tag_pk)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        expected_response = self.expected_details(tag, self.tag_attributes)
+        assert response.data == expected_response
 
     def test_delete_tag(self):
         tag = self.create(self.tag_attributes)
         tag_pk = tag.get("id")
+        response = self.retrieve(tag_pk)
+        assert response.data.get("id") == tag_pk
+
         response = self.delete(tag_pk)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        assert response.data is None

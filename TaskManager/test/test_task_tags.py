@@ -53,6 +53,8 @@ class TestTaskTagsViewSet(TestViewSetBase):
     def test_retrieve(self) -> None:
         self.add_tags(self.task, [self.tag1, self.tag2])
         retrieved_tag = self.request_retrieve_list(args=[self.task.id, self.tag2.id])
+
+        assert retrieved_tag.data.get("id") == self.tag2.id
         assert retrieved_tag.status_code == status.HTTP_200_OK
 
     @staticmethod
