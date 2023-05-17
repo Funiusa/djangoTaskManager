@@ -80,9 +80,11 @@ class TestViewSetBase(APITestCase):
         response = self.api_client.get(url)
         return response
 
-    def request_list(self, args: List[Union[str, int]] = None) -> Response:
+    def request_list(
+        self, args: List[Union[str, int]] = None, data: dict = None
+    ) -> Response:
         url = self.list_url(args)
-        return self.api_client.get(url)
+        return self.api_client.get(url, data)
 
     def request_retrieve(self, key: Union[int, str] = None) -> Response:
         url = self.detail_url(key)
@@ -102,8 +104,8 @@ class TestViewSetBase(APITestCase):
         assert response.status_code == HTTPStatus.OK, response.content
         return response.data
 
-    def list(self, args: List[Union[str, int]] = None) -> Response:
-        response = self.request_list(args)
+    def list(self, args: List[Union[str, int]] = None, data: dict = None) -> Response:
+        response = self.request_list(args, data)
         assert response.status_code == HTTPStatus.OK, response.content
         return response
 

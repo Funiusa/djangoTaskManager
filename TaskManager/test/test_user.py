@@ -96,21 +96,25 @@ class TestUserViewSet(TestViewSetBase):
             ]
         }
 
+    def get_objects_fields(self, data: dict = None, field="id") -> list:
+        response = self.list(self.user_attributes.get("args"), data)
+        response_obj_fields = [obj[field] for obj in response.data]
+        return response_obj_fields
+
     def test_filter_username(self) -> None:
-        for i in range(4):
+        names = ["john", "julia", "joh", "fiona", "donkey", "dragon"]
+        for name in names:
             user_attributes = factory.build(
-                dict, username=f"john{i}", FACTORY_CLASS=UserFactory
+                dict, username=name, FACTORY_CLASS=UserFactory
             )
             self.create(user_attributes)
 
-        filter = UserFilter({"username": "j"})
-        qs = filter.qs
-        assert qs.count() == 4
+        qs = User.objects.all()
 
-        filter = UserFilter({"username": "2"})
-        qs = filter.qs
-        assert qs.count() == 1
-
-        filter = UserFilter({"username": "xyz"})
-        qs = filter.qs
-        assert qs.count() == 0
+        for case in ["j", "d", "fiona", "shrek"]:
+            params = {"username": case}
+            filtered_users = UserFilter(params, queryset=qs).qs.order_by("id")
+            users = [u.username for u in filtered_users]
+            response = self.list(self.user_attributes.get("args"), params)
+            response_users = [obj["username"] for obj in response.data]
+            assert response_users == users
