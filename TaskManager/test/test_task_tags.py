@@ -3,7 +3,7 @@ from rest_framework import status
 from main.models import Task, Tag
 from main.serializer import TagSerializer
 from test.base import TestViewSetBase
-from test.factories import TaskFactory, TagFactory
+from test.factories import TaskFactory, TagFactory, fake
 
 
 class TestTaskTagsViewSet(TestViewSetBase):
@@ -24,7 +24,7 @@ class TestTaskTagsViewSet(TestViewSetBase):
     def test_update(self) -> None:
         self.add_tags(self.task, [self.tag1])
         tag_id = self.tag1.id
-        new_title = "New Tag Title"
+        new_title = fake.word()
         updated_data = {"title": new_title}
         response = self.request_update_list(
             data=updated_data, args=[self.task.id, tag_id]

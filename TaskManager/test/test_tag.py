@@ -1,7 +1,7 @@
 import factory
 from main.models import Tag
 from test.base import TestViewSetBase
-from test.factories import TagFactory
+from test.factories import TagFactory, fake
 
 
 class TestTagViewSet(TestViewSetBase):
@@ -29,10 +29,11 @@ class TestTagViewSet(TestViewSetBase):
         assert update_tag == expected_response
 
     def test_list_tag(self):
-        titles = ["some", "new", "tags"]
-        for title in titles:
-            self.tag_attributes["title"] = title
+        for _ in range(5):
+            self.tag_attributes["title"] = fake.word()
             self.create(self.tag_attributes)
+        titles = list(Tag.objects.all().values_list("title", flat=True))
+
         response = self.list(self.tag_attributes.get("args"))
         count = len(response.data)
         assert count == Tag.objects.count()

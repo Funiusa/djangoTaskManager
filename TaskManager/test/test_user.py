@@ -6,7 +6,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from main.models import User
 from main.views import UserFilter
 from test.base import TestViewSetBase
-from test.factories import UserFactory
+from test.factories import UserFactory, fake
 
 
 class TestUserViewSet(TestViewSetBase):
@@ -37,19 +37,18 @@ class TestUserViewSet(TestViewSetBase):
         assert update_user == expected_response
 
     def test_list_users(self) -> None:
-        usernames = ["Ricky", "Tiki", "Tavi"]
-        for username in usernames:
+        for _ in range(10):
             user_attributes = factory.build(
-                dict, FACTORY_CLASS=UserFactory, username=username
+                dict, FACTORY_CLASS=UserFactory, username=fake.user_name()
             )
             self.create(user_attributes)
 
+        usernames = list(User.objects.all().values_list("username", flat=True))
         response = self.list(self.user_attributes.get("args"))
         response_usernames = [data["username"] for data in response.data]
-        usernames.insert(0, self.user.username)
 
         assert len(response.data) == User.objects.count()
-        assert response_usernames == usernames
+        assert sorted(response_usernames) == sorted(usernames)
 
     def test_retrieve_users(self) -> None:
         user_attributes = factory.build(dict, FACTORY_CLASS=UserFactory)

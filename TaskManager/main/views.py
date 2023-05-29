@@ -24,9 +24,7 @@ from .services.single_resource import SingleResourceMixin, SingleResourceUpdateM
 
 
 class UserFilter(django_filters.FilterSet):
-    username = django_filters.CharFilter(
-        field_name="username", lookup_expr="icontains"
-    )
+    username = django_filters.CharFilter(field_name="username", lookup_expr="icontains")
 
     class Meta:
         model = User

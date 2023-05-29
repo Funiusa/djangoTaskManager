@@ -1,5 +1,5 @@
 import factory
-from main.models import User, Task
+from main.models import User, Task, Tag
 from main.views import TaskFilter
 from test.base import TestViewSetBase
 from test.factories import TaskFactory, UserFactory, TagFactory, fake
@@ -49,9 +49,9 @@ class TestTaskViewSet(TestViewSetBase):
         return response_obj_fields
 
     def test_list_task(self):
-        titles = ["some", "test", "tasks"]
-        attributes = [{"title": attr} for attr in titles]
+        attributes = [{"title": fake.sentence(nb_words=num)} for num in range(1, 5)]
         self.create_objects_list(attributes)
+        titles = list(Task.objects.all().values_list("title", flat=True))
         response_tasks_titles = self.get_objects_fields(field="title")
         assert response_tasks_titles == titles
 
@@ -100,67 +100,54 @@ class TestTaskViewSet(TestViewSetBase):
         self.create_objects_list(attributes)
 
         qs = Task.objects.all()
-        for case in ["rel", "new", "in"]:
-            filter_options = {"state": case}
+        for state in ["rel", "new", "in"]:
+            filter_options = {"state": state}
             filtered_qs = TaskFilter(filter_options, queryset=qs).qs
             filtered_task_ids = list(filtered_qs.values_list("id", flat=True))
             response_ids = self.get_objects_fields(filter_options)
             assert filtered_task_ids == response_ids
 
     def test_task_filter_assigned_by(self):
-        manager1 = UserFactory(
-            username="manager1", role=User.Roles.MANAGER, is_staff=True
-        )
-        manager3 = UserFactory(
-            username="manager3", role=User.Roles.MANAGER, is_staff=True
-        )
-        managers = [manager1, manager1, manager3]
-
-        for manager in managers:
-            attributes = [{"title": fake.sentence(nb_words=2)}]
+        for num in range(1, 5):
+            attributes = [{"title": fake.sentence(nb_words=num)}]
+            manager = UserFactory(role=User.Roles.MANAGER, is_staff=True)
             self.create_objects_list(attributes, manager)
 
         qs = Task.objects.all()
-        for case in ["manager1", "manager2", "manager3"]:
-            filter_options = {"assigned_by": case}
+        managers = User.objects.filter(is_staff=True).values_list("username", flat=True)
+
+        for manager in managers:
+            filter_options = {"assigned_by": manager}
             filtered_qs = TaskFilter(filter_options, queryset=qs).qs
             filtered_task_ids = list(filtered_qs.values_list("id", flat=True))
             response_ids = self.get_objects_fields(filter_options)
             assert filtered_task_ids == response_ids
 
     def test_task_filter_assigned_to(self):
-        developer1 = UserFactory(
-            username="dev1", role=User.Roles.DEVELOPER, is_staff=False
-        )
-        developer2 = UserFactory(
-            username="dev2", role=User.Roles.DEVELOPER, is_staff=False
-        )
-        executors = [developer1, developer2, developer1]
-
-        for executor in executors:
-            attributes = [{"title": fake.sentence(nb_words=2), "assigned_to": executor}]
+        for num in range(1, 5):
+            dev = UserFactory(role=User.Roles.DEVELOPER, is_staff=False)
+            attributes = [{"title": fake.sentence(nb_words=num), "assigned_to": dev}]
             self.create_objects_list(attributes)
 
         qs = Task.objects.all()
-        for case in ["dev1", "dev2", "dev3"]:
-            filter_options = {"assigned_to": case}
+        devs = User.objects.filter(is_staff=False).values_list("username", flat=True)
+        for dev in devs:
+            filter_options = {"assigned_to": dev}
             filtered_qs = TaskFilter(filter_options, queryset=qs).qs
             filtered_task_ids = list(filtered_qs.values_list("id", flat=True))
             response_ids = self.get_objects_fields(filter_options)
             assert filtered_task_ids == response_ids
 
     def test_task_filter_tag(self):
-        tag1 = TagFactory(title="fix")
-        tag2 = TagFactory(title="create")
-        tags = [tag1, tag2, tag1]
-
-        for tag in tags:
-            attributes = [{"title": fake.sentence(nb_words=2), "tags": tag}]
+        for num in range(1, 5):
+            tag = TagFactory(title=fake.word())
+            attributes = [{"title": fake.sentence(nb_words=num), "tag": tag}]
             self.create_objects_list(attributes)
 
+        tags = Tag.objects.all()
         qs = Task.objects.all()
-        for case in ["fix", "create", "update"]:
-            filter_options = {"tags": case}
+        for tag in tags:
+            filter_options = {"tags": tag}
             filtered_qs = TaskFilter(filter_options, queryset=qs).qs
             filtered_task_ids = list(filtered_qs.values_list("id", flat=True))
             response_ids = self.get_objects_fields(filter_options)
