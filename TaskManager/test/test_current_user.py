@@ -1,4 +1,5 @@
 from test.base import TestViewSetBase
+from test.factories import fake
 
 
 class TestUserViewSet(TestViewSetBase):
@@ -25,7 +26,8 @@ class TestUserViewSet(TestViewSetBase):
         }
 
     def test_patch(self):
-        self.patch_single_resource({"first_name": "TestName"})
+        name = fake.name()
+        self.patch_single_resource({"first_name": name})
 
         user = self.single_resource()
-        assert user["first_name"] == "TestName"
+        assert user["first_name"] == name
