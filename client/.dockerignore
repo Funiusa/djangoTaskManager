@@ -1,0 +1,10 @@
+Dockerfile
+.dockerignore
+.git
+.gitignore
+
+/.next/
+.yarn/*
+!.yarn/releases
+.pnp.*
+
